@@ -1,0 +1,129 @@
+// Prisma schema for UtterLore CMS
+// PostgreSQL database
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// PAGE MODELS
+// ============================================
+
+model Page {
+  id           String    @id @default(uuid())
+  schemaId     String    @map("schema_id")
+  slug         String    @unique
+  title        String?
+  description  String?
+  sections     Section[]
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  modifiedBy   String?   @map("modified_by")
+
+  @@map("pages")
+}
+
+model Section {
+  id        String   @id @default(uuid())
+  sectionId String   @map("section_id") // The schema section ID (e.g., "hero", "about")
+  pageId    String   @map("page_id")
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  enabled   Boolean  @default(true)
+  order     Int      @default(0)
+  data      Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([pageId, sectionId])
+  @@map("sections")
+}
+
+// ============================================
+// SCHEMA MODELS (for dynamic schema storage)
+// ============================================
+
+model PageSchema {
+  id          String          @id @default(uuid())
+  name        String
+  slug        String          @unique
+  description String?
+  icon        String?
+  settings    Json            @default("{}")
+  sections    SectionSchema[]
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  @@map("page_schemas")
+}
+
+model SectionSchema {
+  id           String     @id @default(uuid())
+  sectionId    String     @map("section_id") // Unique ID within the page schema
+  pageSchemaId String     @map("page_schema_id")
+  pageSchema   PageSchema @relation(fields: [pageSchemaId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  icon         String?
+  fields       Json       @default("[]") // Array of field definitions
+  order        Int        @default(0)
+  enabled      Boolean    @default(true)
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  @@unique([pageSchemaId, sectionId])
+  @@map("section_schemas")
+}
+
+// ============================================
+// MEDIA MODELS
+// ============================================
+
+model Media {
+  id           String   @id @default(uuid())
+  filename     String
+  originalName String   @map("original_name")
+  mimeType     String   @map("mime_type")
+  size         Int
+  url          String
+  alt          String?
+  caption      String?
+  folder       String   @default("images")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("media")
+}
+
+model MediaFolder {
+  id        String   @id @default(uuid())
+  name      String
+  path      String   @unique
+  parentId  String?  @map("parent_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("media_folders")
+}
+
+// ============================================
+// SETTINGS MODEL
+// ============================================
+
+model Settings {
+  id              String   @id @default("default")
+  siteName        String   @default("UtterLore") @map("site_name")
+  siteDescription String?  @map("site_description")
+  logo            String?
+  favicon         String?
+  theme           String   @default("system")
+  language        String   @default("en")
+  timezone        String   @default("UTC")
+  customSettings  Json     @default("{}") @map("custom_settings")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}
