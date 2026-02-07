@@ -260,6 +260,82 @@ const aboutPageData: SeedPageData = {
 };
 
 // ============================================
+// SEED DATA - Header Configuration
+// ============================================
+
+const headerConfigData: SeedPageData = {
+  schemaId: "header-config",
+  slug: "/config/header",
+  title: "Header Configuration",
+  description: "Site header/navbar configuration",
+  modifiedBy: "admin",
+  sections: [
+    {
+      sectionId: "header",
+      enabled: true,
+      order: 0,
+      data: {
+        logo: {
+          image: "/assets/images/logo.png",
+          alt: "UtterLore Logo",
+          link: "/",
+        },
+        headerStyle: {
+          position: "absolute",
+          top: "23px",
+          height: "103px",
+          backgroundColor: "transparent",
+          paddingHorizontal: "50px",
+        },
+        menuItems: [
+          {
+            label: "Home",
+            href: "/",
+            isSpecial: false,
+          },
+          {
+            label: "About",
+            href: "/about",
+            isSpecial: false,
+          },
+          {
+            label: "FlexiWare",
+            href: "/flexiware",
+            isSpecial: true,
+          },
+          {
+            label: "Contact",
+            href: "/contact",
+            isSpecial: false,
+          },
+        ],
+        menuStyle: {
+          fontSize: "clamp(14px, 1.25vw, 20px)",
+          normalFontWeight: "400",
+          activeFontWeight: "700",
+          textColor: "#FFFFFF",
+          activeUnderlineColor: "#FFFFFF",
+          gap: "clamp(16px, 2vw, 32px)",
+        },
+        ctaButton: {
+          enabled: true,
+          text: "Get in touch",
+          link: "/contact",
+          variant: "primary",
+          showArrow: true,
+          height: 52,
+          width: 195,
+        },
+        cartIcon: {
+          enabled: false,
+          iconColor: "#FFFFFF",
+        },
+      },
+    },
+  ],
+};
+
+// ============================================
 // SEED FUNCTION
 // ============================================
 
@@ -325,6 +401,9 @@ async function main() {
 
     // Seed About Page
     await seedPage(aboutPageData);
+
+    // Seed Header Configuration
+    await seedPage(headerConfigData);
 
     console.log("\n✨ Database seeding completed successfully!");
   } catch (error) {

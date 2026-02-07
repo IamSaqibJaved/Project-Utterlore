@@ -78,9 +78,27 @@ export const usePageContentStore = create<PageContentState>((set, get) => ({
       }
 
       set({ isLoading: false });
+      // If the API doesn't have this page yet (common for config pages like
+      // /config/header), fall back to local mock data if present.
+      const localPage = Object.values(get().pages).find((p) => p.slug === slug);
+      if (localPage) {
+        set((state) => ({
+          pages: { ...state.pages, [localPage.id]: localPage },
+          isLoading: false,
+        }));
+        return localPage;
+      }
+
       return null;
     } catch (error) {
       console.error("Failed to load page by slug:", error);
+      // Fall back to local mock data if API fails
+      const localPage = Object.values(get().pages).find((p) => p.slug === slug);
+      if (localPage) {
+        set({ isLoading: false, error: "Failed to load page from API, using local data" });
+        return localPage;
+      }
+
       set({ isLoading: false, error: "Failed to load page" });
       return null;
     }

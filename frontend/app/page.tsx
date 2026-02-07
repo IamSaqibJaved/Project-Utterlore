@@ -69,6 +69,24 @@ const defaultAboutData: AboutUsData = {
   imagePosition: "left",
 };
 
+// Fetch header configuration from CMS
+async function getHeaderConfig() {
+  try {
+    const page = await cmsApi.pages.getBySlug("/config/header");
+    
+    if (page && page.sections && page.sections.length > 0) {
+      const headerSection = page.sections[0];
+      return headerSection.data;
+    }
+    
+    // Return default config if not found
+    return null;
+  } catch (error) {
+    console.error("Failed to fetch header config:", error);
+    return null;
+  }
+}
+
 // Fetch landing page data from CMS
 async function getLandingPageData() {
   try {
@@ -129,26 +147,36 @@ async function getLandingPageData() {
 
 export default async function Home() {
   const sections = await getLandingPageData();
+  const headerConfig = await getHeaderConfig();
+
+  // Extract header configuration with defaults
+  const navbarProps = headerConfig || {
+    logo: { image: "/assets/images/logo.png", alt: "UtterLore Logo", link: "/" },
+    menuItems: [
+      { label: "Home", href: "/" },
+      { label: "About", href: "/about" },
+      { label: "Publishing", href: "/publishing" },
+      { label: "Digital", href: "/digital" },
+      { label: "Flexi Brez", href: "/flexi-brez", isSpecial: true },
+      { label: "Blog", href: "/blog" },
+      { label: "Community", href: "/community" },
+      { label: "Login", href: "/login" },
+    ],
+    ctaButton: {
+      enabled: true,
+      text: "Get in touch",
+      link: "/contact",
+    },
+    cartIcon: {
+      enabled: true,
+    },
+  };
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       <Navbar
-        logo="/assets/images/logo.png"
-        logoAlt="UtterLore Logo"
-        menuItems={[
-          { label: "Home", href: "/" },
-          { label: "About", href: "/about" },
-          { label: "Publishing", href: "/publishing" },
-          { label: "Digital", href: "/digital" },
-          { label: "Flexi Brez", href: "/flexi-brez", isSpecial: true },
-          { label: "Blog", href: "/blog" },
-          { label: "Community", href: "/community" },
-          { label: "Login", href: "/login" },
-        ]}
+        {...navbarProps}
         activeItem="/"
-        ctaText="Get in touch"
-        ctaLink="/contact"
-        showCart={true}
       />
       {sections.hero.enabled && (
         <Hero

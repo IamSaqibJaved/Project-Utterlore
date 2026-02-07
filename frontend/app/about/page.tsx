@@ -1,25 +1,54 @@
 import { Hero, Navbar, PhilosophySection, WhatWeDoSection, StudioValuesSection, MonAdamsSection, HowWeWorkSection, StudioCardsSection } from "@/components";
+import { cmsApi } from "@/lib/api";
 
-export default function AboutPage() {
+// Fetch header configuration from CMS
+async function getHeaderConfig() {
+  try {
+    const page = await cmsApi.pages.getBySlug("/config/header");
+    
+    if (page && page.sections && page.sections.length > 0) {
+      const headerSection = page.sections[0];
+      return headerSection.data;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Failed to fetch header config:", error);
+    return null;
+  }
+}
+
+export default async function AboutPage() {
+  const headerConfig = await getHeaderConfig();
+
+  // Extract header configuration with defaults
+  const navbarProps = headerConfig || {
+    logo: { image: "/assets/images/logo.png", alt: "UtterLore Logo", link: "/" },
+    menuItems: [
+      { label: "Home", href: "/" },
+      { label: "About", href: "/about" },
+      { label: "Publishing", href: "/publishing" },
+      { label: "Digital", href: "/digital" },
+      { label: "Flexi Brez", href: "/flexi-brez", isSpecial: true },
+      { label: "Blog", href: "/blog" },
+      { label: "Community", href: "/community" },
+      { label: "Login", href: "/login" },
+    ],
+    ctaButton: {
+      enabled: true,
+      text: "Get in touch",
+      link: "/contact",
+    },
+    cartIcon: {
+      enabled: true,
+    },
+  };
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       <Navbar
-        logo="/assets/images/logo.png"
-        logoAlt="UtterLore Logo"
-        menuItems={[
-          { label: "Home", href: "/" },
-          { label: "About", href: "/about" },
-          { label: "Publishing", href: "/publishing" },
-          { label: "Digital", href: "/digital" },
-          { label: "Flexi Brez", href: "/flexi-brez", isSpecial: true },
-          { label: "Blog", href: "/blog" },
-          { label: "Community", href: "/community" },
-          { label: "Login", href: "/login" },
-        ]}
+        {...navbarProps}
         activeItem="/about"
-        ctaText="Get in touch"
-        ctaLink="/contact"
-        showCart={true}
       />
       <Hero
         sectionTitle="UTTER LORE"

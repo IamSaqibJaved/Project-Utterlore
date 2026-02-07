@@ -47,7 +47,7 @@ interface HeaderConfig {
   };
 }
 
-interface NavbarProps extends HeaderConfig {
+interface NavbarProps extends Omit<HeaderConfig, "logo" | "menuItems"> {
   // Legacy props for backward compatibility
   logo?: string | { image?: string; alt?: string; link?: string };
   logoAlt?: string;
@@ -105,6 +105,10 @@ export default function Navbar(props: NavbarProps) {
     height: 52,
     width: 195,
   };
+
+  // Convenience locals to support legacy render paths
+  const ctaText = ctaButton.text;
+  const ctaLink = ctaButton.link;
 
   const cartIcon = props.cartIcon || {
     enabled: props.showCart !== undefined ? props.showCart : false,
@@ -377,7 +381,7 @@ export default function Navbar(props: NavbarProps) {
           </div>
 
           {/* CTA Button */}
-          {ctaText && ctaLink && (
+          {ctaButton.enabled && ctaText && ctaLink && (
             <div className="pt-4 border-t border-white/10">
               <Button
                 href={ctaLink}
