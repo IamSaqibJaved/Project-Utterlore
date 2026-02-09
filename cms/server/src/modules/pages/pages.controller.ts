@@ -63,6 +63,23 @@ export class PagesController {
     return page;
   }
 
+  @Get("by-schema")
+  @ApiOperation({ summary: "Get page by schema ID" })
+  @ApiQuery({ name: "schemaId", description: "Page schema ID", example: "about-page" })
+  @ApiResponse({
+    status: 200,
+    description: "Page content",
+    type: PageResponseDto,
+  })
+  @ApiResponse({ status: 404, description: "Page not found" })
+  async findBySchemaId(@Query("schemaId") schemaId: string) {
+    const page = await this.pagesService.findBySchemaId(schemaId);
+    if (!page) {
+      throw new HttpException("Page not found", HttpStatus.NOT_FOUND);
+    }
+    return page;
+  }
+
   @Get(":id")
   @ApiOperation({ summary: "Get page by ID" })
   @ApiParam({ name: "id", description: "Page ID" })

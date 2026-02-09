@@ -36,8 +36,13 @@ export const usePageContentStore = create<PageContentState>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      // Try to fetch from API
-      const page = await api.getPage(pageId);
+      // First, try to fetch by schema ID (since pageId is usually a schema ID like "about-page")
+      let page = await api.getPageBySchemaId(pageId);
+      
+      // If that fails, try fetching by UUID (in case pageId is actually a UUID)
+      if (!page) {
+        page = await api.getPage(pageId);
+      }
 
       if (page) {
         set((state) => ({

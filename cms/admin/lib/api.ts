@@ -147,6 +147,19 @@ class ApiClient {
     }
   }
 
+  async getPageBySchemaId(schemaId: string): Promise<PageContent | null> {
+    try {
+      return await this.request<PageContent>(
+        `/pages/by-schema?schemaId=${encodeURIComponent(schemaId)}`,
+      );
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("404")) {
+        return null;
+      }
+      throw error;
+    }
+  }
+
   async getPageBySlug(slug: string): Promise<PageContent | null> {
     try {
       return await this.request<PageContent>(

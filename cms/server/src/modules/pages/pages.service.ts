@@ -62,6 +62,15 @@ export class PagesService {
     return page ? this.mapToPageContent(page) : null;
   }
 
+  async findBySchemaId(schemaId: string): Promise<PageContent | null> {
+    const page = await this.prisma.page.findFirst({
+      where: { schemaId },
+      include: { sections: { orderBy: { order: "asc" } } },
+    });
+
+    return page ? this.mapToPageContent(page) : null;
+  }
+
   async create(createPageDto: CreatePageDto): Promise<PageContent> {
     const page = await this.prisma.page.create({
       data: {
