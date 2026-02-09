@@ -88,13 +88,44 @@ export function usePage(id: string) {
     actions.setLoading(true);
     try {
       const page = await api.getPage(id);
-      actions.setData(page);
+      if (page) {
+        actions.setData(page);
+      } else {
+        actions.setError("Page not found");
+      }
     } catch (err) {
       actions.setError(
         err instanceof Error ? err.message : "Failed to fetch page",
       );
     }
   }, [id, actions]);
+
+  useEffect(() => {
+    fetchPage();
+  }, [fetchPage]);
+
+  return { ...state, refetch: fetchPage };
+}
+
+export function usePageBySchemaId(schemaId: string) {
+  const [state, actions] = useAsyncState<PageContent>(null);
+
+  const fetchPage = useCallback(async () => {
+    if (!schemaId) return;
+    actions.setLoading(true);
+    try {
+      const page = await api.getPageBySchemaId(schemaId);
+      if (page) {
+        actions.setData(page);
+      } else {
+        actions.setError("Page not found");
+      }
+    } catch (err) {
+      actions.setError(
+        err instanceof Error ? err.message : "Failed to fetch page",
+      );
+    }
+  }, [schemaId, actions]);
 
   useEffect(() => {
     fetchPage();
@@ -111,7 +142,11 @@ export function usePageBySlug(slug: string) {
     actions.setLoading(true);
     try {
       const page = await api.getPageBySlug(slug);
-      actions.setData(page);
+      if (page) {
+        actions.setData(page);
+      } else {
+        actions.setError("Page not found");
+      }
     } catch (err) {
       actions.setError(
         err instanceof Error ? err.message : "Failed to fetch page",

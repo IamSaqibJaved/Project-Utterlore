@@ -122,7 +122,7 @@ export default function Navbar(props: NavbarProps) {
     <nav
       className={`flex items-center z-50 w-full ${className}`}
       style={{
-        position: headerStyle.position as any,
+        position: (headerStyle.position as React.CSSProperties['position']) || 'absolute',
         top: headerStyle.top,
         left: "0",
         right: "0",
@@ -218,7 +218,7 @@ export default function Navbar(props: NavbarProps) {
             <Button
               href={ctaButton.link || "/contact"}
               text={ctaButton.text || "Get in touch"}
-              variant={(ctaButton.variant as any) || "primary"}
+              variant={(ctaButton.variant as "primary" | "secondary") || "primary"}
               showArrow={ctaButton.showArrow ?? true}
               className="group"
               height={ctaButton.height || 52}

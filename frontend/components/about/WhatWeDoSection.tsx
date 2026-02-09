@@ -1,7 +1,8 @@
 "use client";
 
 interface StudioItem {
-  icon: React.ReactNode;
+  icon?: React.ReactNode | string; // Can be React node or SVG string from CMS
+  iconSvg?: string; // SVG string from CMS
   title: string;
   description: string;
   isSpecial?: boolean; // For FlexiBrez or other special items
@@ -12,6 +13,69 @@ interface WhatWeDoSectionProps {
   description?: string;
   items?: StudioItem[];
   className?: string;
+  // Color customization
+  cardBackground?: string; // Background color/gradient for cards
+  cardTitleColor?: string; // Color for card titles
+  cardDescriptionColor?: string; // Color for card descriptions
+  iconBackgroundColor?: string; // Background color for icon container
+}
+
+// Helper function to render SVG from string
+function renderIcon(icon: React.ReactNode | string | undefined, iconSvg?: string): React.ReactNode {
+  // Priority: icon prop > iconSvg prop
+  const svgString = (typeof icon === 'string' ? icon : iconSvg) || '';
+  
+  if (typeof icon === 'object' && icon !== null) {
+    // Already a React node
+    return icon;
+  }
+  
+  if (svgString) {
+    // Parse and render SVG string
+    try {
+      // Ensure SVG has proper width and height for consistent rendering
+      let processedSvg = svgString.trim();
+      
+      // If SVG doesn't have width/height, add them
+      if (!processedSvg.includes('width=') || !processedSvg.includes('height=')) {
+        // Try to add width and height attributes to the SVG tag
+        processedSvg = processedSvg.replace(
+          /<svg([^>]*)>/i,
+          (match, attributes) => {
+            // Check if width/height already exist
+            if (!attributes.includes('width=')) {
+              attributes += ' width="24"';
+            }
+            if (!attributes.includes('height=')) {
+              attributes += ' height="24"';
+            }
+            return `<svg${attributes}>`;
+          }
+        );
+      }
+      
+      // Create a wrapper div and use dangerouslySetInnerHTML to render SVG
+      // This is safe since we control the SVG content from CMS
+      return (
+        <div
+          dangerouslySetInnerHTML={{ __html: processedSvg }}
+          style={{
+            width: "24px",
+            height: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        />
+      );
+    } catch (error) {
+      console.error("Error rendering SVG:", error);
+      return null;
+    }
+  }
+  
+  return null;
 }
 
 export default function WhatWeDoSection({
@@ -19,6 +83,10 @@ export default function WhatWeDoSection({
   description = "Utter Lore brings together knowledge, design, and intention to support thoughtful modern living.\nThrough Publishing, Digital, and FlexiBrez, we create content, experiences, and everyday essentials designed for clarity, balance, and long-term value.",
   items,
   className = "",
+  cardBackground = "radial-gradient(43.04% 25.07% at 50% 50%, #F9F4FF 100%)",
+  cardTitleColor = "#000",
+  cardDescriptionColor = "#212121",
+  iconBackgroundColor = "#69488F",
 }: WhatWeDoSectionProps) {
   // Default items with icons
   const defaultItems: StudioItem[] = items || [
@@ -153,82 +221,86 @@ export default function WhatWeDoSection({
           {/* Cards */}
           {displayItems.length > 0 && (
             <div className="flex flex-wrap justify-center w-full mt-8" style={{ gap: "26px" }}>
-              {displayItems.map((item, index) => (
-                <div
-                  key={index}
-                  className="w-full sm:w-[calc(50%-13px)] lg:w-[395px]"
-                  style={{
-                    display: "flex",
-                    padding: "24px",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    gap: "11px",
-                    alignSelf: "stretch",
-                    borderRadius: "20px",
-                    background:
-                      "radial-gradient(43.04% 25.07% at 50% 50%, #F9F4FF 100%)",
-                  }}
-                >
-                  {/* Icon */}
+              {displayItems.map((item, index) => {
+                const iconElement = renderIcon(item.icon, item.iconSvg);
+                return (
                   <div
+                    key={index}
+                    className="w-full sm:w-[calc(50%-13px)] lg:w-[395px]"
                     style={{
                       display: "flex",
-                      width: "43px",
-                      height: "43px",
-                      padding: "9px 9px 10px 10px",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      borderRadius: "36.441px",
-                      background: "#69488F",
+                      padding: "24px",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      gap: "11px",
+                      alignSelf: "stretch",
+                      borderRadius: "20px",
+                      background: cardBackground,
                     }}
                   >
-                    <div
+                    {/* Icon */}
+                    {iconElement && (
+                      <div
+                        style={{
+                          display: "flex",
+                          width: "43px",
+                          height: "43px",
+                          padding: "9px 9px 10px 10px",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: "36.441px",
+                          background: iconBackgroundColor,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "24px",
+                            height: "24px",
+                            flexShrink: 0,
+                            aspectRatio: "1/1",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {iconElement}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Title */}
+                    <h3
                       style={{
-                        width: "24px",
-                        height: "24px",
-                        flexShrink: 0,
-                        aspectRatio: "1/1",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        fontFamily: item.isSpecial
+                          ? "var(--font-brunella)"
+                          : "var(--font-bona-nova)",
+                        fontSize: "28px",
+                        fontStyle: "normal",
+                        fontWeight: 400,
+                        lineHeight: "normal",
+                        color: cardTitleColor,
                       }}
                     >
-                      {item.icon}
-                    </div>
+                      {item.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p
+                      style={{
+                        fontFamily: "var(--font-bona-nova)",
+                        fontSize: "16px",
+                        fontStyle: "normal",
+                        fontWeight: 400,
+                        lineHeight: "normal",
+                        color: cardDescriptionColor,
+                        alignSelf: "stretch",
+                      }}
+                    >
+                      {item.description}
+                    </p>
                   </div>
-
-                  {/* Title */}
-                  <h3
-                    style={{
-                      fontFamily: item.isSpecial
-                        ? "var(--font-brunella)"
-                        : "var(--font-bona-nova)",
-                      fontSize: "28px",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "normal",
-                      color: "#000",
-                    }}
-                  >
-                    {item.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p
-                    style={{
-                      fontFamily: "var(--font-bona-nova)",
-                      fontSize: "16px",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "normal",
-                      color: "#212121",
-                      alignSelf: "stretch",
-                    }}
-                  >
-                    {item.description}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

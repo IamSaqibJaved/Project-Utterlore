@@ -1,13 +1,96 @@
 "use client";
 
+interface StepItem {
+  icon?: React.ReactNode | string; // Can be React node or SVG string
+  iconSvg?: string; // SVG string from CMS
+  title: string;
+  subheading?: string;
+  description?: string;
+}
+
 interface HowWeWorkSectionProps {
   className?: string;
+  // Content
+  heading?: string;
+  description?: string;
+  steps?: StepItem[];
+  // Color customization
+  headingColor?: string;
+  descriptionColor?: string;
+  stepTitleColor?: string;
+  stepSubheadingColor?: string;
+  stepDescriptionColor?: string;
+  iconContainerBackground?: string;
+  iconContainerBorderColor?: string;
+  iconColor?: string;
+  arrowColor?: string;
+}
+
+// Helper function to render SVG from string
+function renderIcon(icon: React.ReactNode | string | undefined, iconSvg?: string): React.ReactNode {
+  const svgString = (typeof icon === 'string' ? icon : iconSvg) || '';
+  
+  if (typeof icon === 'object' && icon !== null) {
+    return icon;
+  }
+  
+  if (svgString) {
+    try {
+      let processedSvg = svgString.trim();
+      
+      if (!processedSvg.includes('width=') || !processedSvg.includes('height=')) {
+        processedSvg = processedSvg.replace(
+          /<svg([^>]*)>/i,
+          (match, attributes) => {
+            if (!attributes.includes('width=')) {
+              attributes += ' width="38"';
+            }
+            if (!attributes.includes('height=')) {
+              attributes += ' height="38"';
+            }
+            return `<svg${attributes}>`;
+          }
+        );
+      }
+      
+      return (
+        <div
+          dangerouslySetInnerHTML={{ __html: processedSvg }}
+          style={{
+            width: "clamp(28px, 5vw, 38px)",
+            height: "clamp(28px, 5vw, 38px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        />
+      );
+    } catch (error) {
+      console.error("Error rendering SVG:", error);
+      return null;
+    }
+  }
+  
+  return null;
 }
 
 export default function HowWeWorkSection({
   className = "",
+  heading = "How we work",
+  description = "A thoughtful, collaborative process designed to bring clarity, creativity, and intention to every project",
+  steps,
+  headingColor = "#000",
+  descriptionColor = "#212121",
+  stepTitleColor = "#000",
+  stepSubheadingColor = "#212121",
+  stepDescriptionColor = "#212121",
+  iconContainerBackground = "#F5EDFF",
+  iconContainerBorderColor = "#DFC6FF",
+  iconColor = "#69488F",
+  arrowColor = "#69488F",
 }: HowWeWorkSectionProps) {
-  const steps = [
+  const defaultSteps: StepItem[] = steps || [
     {
       icon: (
         <svg
@@ -102,6 +185,13 @@ export default function HowWeWorkSection({
     },
   ];
 
+  const displaySteps = steps || defaultSteps;
+
+  // Helper to update SVG fill color
+  const updateSvgColor = (svgString: string, color: string): string => {
+    return svgString.replace(/fill="#69488F"/g, `fill="${color}"`);
+  };
+
   return (
     <section
       className={`w-full bg-white py-16 md:py-20 min-[1300px]:py-24 ${className}`}
@@ -109,39 +199,51 @@ export default function HowWeWorkSection({
       <div className="container mx-auto px-4 md:px-8 lg:px-12 xl:px-[80px]">
         <div className="flex flex-col items-center gap-8 md:gap-10 min-[1300px]:gap-12">
           {/* Heading */}
-          <h2
-            className="text-center"
-            style={{
-              color: "#000",
-              fontFamily: "var(--font-bona-nova)",
-              fontSize: "clamp(28px, 5vw, 44px)",
-              fontStyle: "normal",
-              fontWeight: 400,
-              lineHeight: "normal",
-            }}
-          >
-            How we work
-          </h2>
+          {heading && (
+            <h2
+              className="text-center"
+              style={{
+                color: headingColor,
+                fontFamily: "var(--font-bona-nova)",
+                fontSize: "clamp(28px, 5vw, 44px)",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "normal",
+              }}
+            >
+              {heading}
+            </h2>
+          )}
 
           {/* Description */}
-          <p
-            className="text-center max-w-4xl px-4"
-            style={{
-              color: "#212121",
-              fontFamily: "var(--font-inter)",
-              fontSize: "clamp(16px, 2.5vw, 18px)",
-              fontStyle: "normal",
-              fontWeight: 400,
-              lineHeight: "normal",
-            }}
-          >
-            A thoughtful, collaborative process designed to bring clarity,
-            creativity, and intention to every project
-          </p>
+          {description && (
+            <p
+              className="text-center max-w-4xl px-4"
+              style={{
+                color: descriptionColor,
+                fontFamily: "var(--font-inter)",
+                fontSize: "clamp(16px, 2.5vw, 18px)",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "normal",
+              }}
+            >
+              {description}
+            </p>
+          )}
 
           {/* Steps with arrows */}
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-2 xl:gap-3 w-full px-4 md:px-0">
-            {steps.map((step, index) => (
+          {displaySteps.length > 0 && (
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-2 xl:gap-3 w-full px-4 md:px-0">
+              {displaySteps.map((step, index) => {
+                const iconElement = renderIcon(step.icon, step.iconSvg);
+                // Update icon color if it's an SVG string
+                let processedIcon = iconElement;
+                if (typeof step.iconSvg === 'string' && iconColor !== "#69488F") {
+                  const updatedSvg = updateSvgColor(step.iconSvg, iconColor);
+                  processedIcon = renderIcon(undefined, updatedSvg);
+                }
+                return (
               <div
                 key={index}
                 className="flex flex-col lg:flex-row items-center"
@@ -154,39 +256,41 @@ export default function HowWeWorkSection({
                   }}
                 >
                   {/* Icon Container */}
-                  <div
-                    className="flex justify-center items-center"
-                    style={{
-                      width: "clamp(60px, 10vw, 80px)",
-                      height: "clamp(60px, 10vw, 80px)",
-                      padding: "clamp(12px, 2vw, 18px) clamp(10px, 2vw, 16px)",
-                      gap: "10px",
-                      borderRadius: "200px",
-                      border: "1px solid #DFC6FF",
-                      background: "#F5EDFF",
-                    }}
-                  >
-                    {/* Icon */}
+                  {processedIcon && (
                     <div
+                      className="flex justify-center items-center"
                       style={{
-                        width: "clamp(28px, 5vw, 38px)",
-                        height: "clamp(28px, 5vw, 38px)",
-                        flexShrink: 0,
-                        aspectRatio: "1/1",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        width: "clamp(60px, 10vw, 80px)",
+                        height: "clamp(60px, 10vw, 80px)",
+                        padding: "clamp(12px, 2vw, 18px) clamp(10px, 2vw, 16px)",
+                        gap: "10px",
+                        borderRadius: "200px",
+                        border: `1px solid ${iconContainerBorderColor}`,
+                        background: iconContainerBackground,
                       }}
                     >
-                      {step.icon}
+                      {/* Icon */}
+                      <div
+                        style={{
+                          width: "clamp(28px, 5vw, 38px)",
+                          height: "clamp(28px, 5vw, 38px)",
+                          flexShrink: 0,
+                          aspectRatio: "1/1",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {processedIcon}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Title */}
                   <h3
                     className="text-center"
                     style={{
-                      color: "#000",
+                      color: stepTitleColor,
                       fontFamily: "var(--font-bona-nova)",
                       fontSize: "clamp(20px, 3.5vw, 28px)",
                       fontStyle: "normal",
@@ -198,38 +302,42 @@ export default function HowWeWorkSection({
                   </h3>
 
                   {/* Subheading */}
-                  <p
-                    className="text-center"
-                    style={{
-                      color: "#212121",
-                      fontFamily: "var(--font-figma-hand)",
-                      fontSize: "clamp(14px, 2.5vw, 18px)",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "normal",
-                    }}
-                  >
-                    {step.subheading}
-                  </p>
+                  {step.subheading && (
+                    <p
+                      className="text-center"
+                      style={{
+                        color: stepSubheadingColor,
+                        fontFamily: "var(--font-figma-hand)",
+                        fontSize: "clamp(14px, 2.5vw, 18px)",
+                        fontStyle: "normal",
+                        fontWeight: 400,
+                        lineHeight: "normal",
+                      }}
+                    >
+                      {step.subheading}
+                    </p>
+                  )}
 
                   {/* Description */}
-                  <p
-                    className="text-center"
-                    style={{
-                      color: "#212121",
-                      fontFamily: "var(--font-inter)",
-                      fontSize: "clamp(12px, 2vw, 14px)",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "normal",
-                    }}
-                  >
-                    {step.description}
-                  </p>
+                  {step.description && (
+                    <p
+                      className="text-center"
+                      style={{
+                        color: stepDescriptionColor,
+                        fontFamily: "var(--font-inter)",
+                        fontSize: "clamp(12px, 2vw, 14px)",
+                        fontStyle: "normal",
+                        fontWeight: 400,
+                        lineHeight: "normal",
+                      }}
+                    >
+                      {step.description}
+                    </p>
+                  )}
                 </div>
 
                 {/* Arrow between items (not after last item) */}
-                {index < steps.length - 1 && (
+                {index < displaySteps.length - 1 && (
                   <div
                     className="hidden lg:flex items-center justify-center flex-shrink-0 mx-1 xl:mx-2"
                     style={{
@@ -246,14 +354,16 @@ export default function HowWeWorkSection({
                     >
                       <path
                         d="M97.0607 12.1066C97.6464 11.5208 97.6464 10.571 97.0607 9.98524L87.5147 0.439297C86.9289 -0.14649 85.9792 -0.14649 85.3934 0.439297C84.8076 1.02508 84.8076 1.97483 85.3934 2.56062L93.8787 11.0459L85.3934 19.5312C84.8076 20.117 84.8076 21.0667 85.3934 21.6525C85.9792 22.2383 86.9289 22.2383 87.5147 21.6525L97.0607 12.1066ZM0 11.0459V12.5459H3V11.0459V9.5459H0V11.0459ZM9 11.0459V12.5459H15V11.0459V9.5459H9V11.0459ZM21 11.0459V12.5459H27V11.0459V9.5459H21V11.0459ZM33 11.0459V12.5459H39V11.0459V9.5459H33V11.0459ZM45 11.0459V12.5459H51V11.0459V9.5459H45V11.0459ZM57 11.0459V12.5459H63V11.0459V9.5459H57V11.0459ZM69 11.0459V12.5459H75V11.0459V9.5459H69V11.0459ZM81 11.0459V12.5459H87V11.0459V9.5459H81V11.0459ZM93 11.0459V12.5459H96V11.0459V9.5459H93V11.0459Z"
-                        fill="#69488F"
+                        fill={arrowColor}
                       />
                     </svg>
                   </div>
                 )}
               </div>
-            ))}
-          </div>
+            );
+          })}
+            </div>
+          )}
         </div>
       </div>
     </section>

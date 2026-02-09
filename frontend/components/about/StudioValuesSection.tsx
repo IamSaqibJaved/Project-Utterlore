@@ -1,8 +1,11 @@
 "use client";
 
 interface ValueItem {
-  icon: React.ReactNode;
-  label: string;
+  icon?: React.ReactNode | string; // Can be React node or SVG string from CMS
+  iconSvg?: string; // SVG string from CMS
+  label?: string; // For backward compatibility
+  title?: string; // From CMS schema
+  description?: string; // Optional description
 }
 
 interface StudioValuesSectionProps {
@@ -10,6 +13,67 @@ interface StudioValuesSectionProps {
   description?: string;
   values?: ValueItem[];
   className?: string;
+  // Color customization
+  iconBackground?: string; // Background gradient/color for icon containers
+  valueTitleColor?: string; // Color for value titles
+}
+
+// Helper function to render SVG from string
+function renderIcon(icon: React.ReactNode | string | undefined, iconSvg?: string): React.ReactNode {
+  // Priority: icon prop > iconSvg prop
+  const svgString = (typeof icon === 'string' ? icon : iconSvg) || '';
+  
+  if (typeof icon === 'object' && icon !== null) {
+    // Already a React node
+    return icon;
+  }
+  
+  if (svgString) {
+    // Parse and render SVG string
+    try {
+      // Ensure SVG has proper width and height for consistent rendering
+      let processedSvg = svgString.trim();
+      
+      // If SVG doesn't have width/height, add them
+      if (!processedSvg.includes('width=') || !processedSvg.includes('height=')) {
+        // Try to add width and height attributes to the SVG tag
+        processedSvg = processedSvg.replace(
+          /<svg([^>]*)>/i,
+          (match, attributes) => {
+            // Check if width/height already exist
+            if (!attributes.includes('width=')) {
+              attributes += ' width="40"';
+            }
+            if (!attributes.includes('height=')) {
+              attributes += ' height="40"';
+            }
+            return `<svg${attributes}>`;
+          }
+        );
+      }
+      
+      // Create a wrapper div and use dangerouslySetInnerHTML to render SVG
+      // This is safe since we control the SVG content from CMS
+      return (
+        <div
+          dangerouslySetInnerHTML={{ __html: processedSvg }}
+          style={{
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        />
+      );
+    } catch (error) {
+      console.error("Error rendering SVG:", error);
+      return null;
+    }
+  }
+  
+  return null;
 }
 
 export default function StudioValuesSection({
@@ -17,6 +81,8 @@ export default function StudioValuesSection({
   description = "We bring research, thoughtful writing, and creative perspective together to define Utter Lore's editorial voice.",
   values,
   className = "",
+  iconBackground = "radial-gradient(50% 50% at 50% 50%, #9A85B1 0%, #3C1E66 100%)",
+  valueTitleColor = "#000",
 }: StudioValuesSectionProps) {
   // Default values with icons
   const defaultValues: ValueItem[] = values || [
@@ -163,47 +229,54 @@ export default function StudioValuesSection({
                     flexWrap: "wrap",
                   }}
                 >
-                  {displayValues.map((value, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        gap: "8px",
-                      }}
-                    >
-                      {/* Icon */}
+                  {displayValues.map((value, index) => {
+                    const iconElement = renderIcon(value.icon, value.iconSvg);
+                    const labelText = value.title || value.label || '';
+                    return (
                       <div
+                        key={index}
                         style={{
                           display: "flex",
+                          flexDirection: "column",
                           alignItems: "center",
-                          justifyContent: "center",
-                          width: "80px",
-                          height: "80px",
-                          borderRadius: "50px",
-                          background:
-                            "radial-gradient(50% 50% at 50% 50%, #9A85B1 0%, #3C1E66 100%)",
+                          gap: "8px",
                         }}
                       >
-                        {value.icon}
+                        {/* Icon */}
+                        {iconElement && (
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "80px",
+                              height: "80px",
+                              borderRadius: "50px",
+                              background: iconBackground,
+                            }}
+                          >
+                            {iconElement}
+                          </div>
+                        )}
+                        {/* Label */}
+                        {labelText && (
+                          <span
+                            style={{
+                              fontFamily: "var(--font-bona-nova)",
+                              fontSize: "18px",
+                              fontStyle: "normal",
+                              fontWeight: 400,
+                              lineHeight: "normal",
+                              color: valueTitleColor,
+                              textAlign: "center",
+                            }}
+                          >
+                            {labelText}
+                          </span>
+                        )}
                       </div>
-                      {/* Label */}
-                      <span
-                        style={{
-                          fontFamily: "var(--font-bona-nova)",
-                          fontSize: "18px",
-                          fontStyle: "normal",
-                          fontWeight: 400,
-                          lineHeight: "normal",
-                          color: "#000",
-                          textAlign: "center",
-                        }}
-                      >
-                        {value.label}
-                      </span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
