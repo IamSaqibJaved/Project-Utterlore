@@ -89,50 +89,48 @@ const aboutPageData: SeedPageData = {
   description: "Learn about our philosophy, values, and team",
   modifiedBy: "admin",
   sections: [
-    // {
-    //   sectionId: "hero",
-    //   enabled: true,
-    //   order: 0,
-    //   data: {
-    //     sectionTitle: "UTTER LORE",
-    //     title: "Where Insight, Design and Intention Shape Modern Living",
-    //     description:
-    //       "Utter Lore is a considered space for modern living, shaped by knowledge, design, and intention. We create thoughtful content, considered digital and e-commerce experiences, and flexible lifestyle essentials. Each element is designed to support clarity, balance, and mindful living.",
-    //     descriptionMaxWidth: 885,
-    //     backgroundImages: [
-    //       "https://res.cloudinary.com/dnh7x7r5j/image/upload/v1768154458/CarasoulWallpaper_ls56hr.jpg",
-    //     ],
-    //     overlayColor: "rgba(0, 0, 0, 0.5)",
-    //   },
-    // },
-    // {
-    //   sectionId: "philosophy",
-    //   enabled: true,
-    //   order: 1,
-    //   data: {
-    //     sectionTitle: "About",
-    //     heading: "Our Philosophy",
-    //     description:
-    //       "We believe modern living is at its best when it is intentional and informed. Utter Lore creates space for clarity through thoughtful publishing, considered digital and content experiences, and flexible lifestyle essentials. Guided by purpose rather than trends, we offer perspective, supporting balance, reflection, and mindful living shaped daily with intention.",
-    //     items: [
-    //       {
-    //         title: "Knowledge with Intention",
-    //         description:
-    //           "Thoughtful publishing designed to inform, deepen understanding, and endure beyond trends.",
-    //       },
-    //       {
-    //         title: "Clarity by Design",
-    //         description:
-    //           "Digital and content experiences, designed with clarity and purpose.",
-    //       },
-    //       {
-    //         title: "Design that Adapts",
-    //         description:
-    //           "Flexible lifestyle essentials created to move with life and support everyday balance.",
-    //       },
-    //     ],
-    //   },
-    // },
+    {
+      sectionId: "hero",
+      enabled: true,
+      order: 0,
+      data: {
+        sectionTitle: "UTTER LORE",
+        title: "Where Insight, Design and Intention Shape Modern Living",
+        description:
+          "Utter Lore is a considered space for modern living, shaped by knowledge, design, and intention. We create thoughtful content, considered digital and e-commerce experiences, and flexible lifestyle essentials. Each element is designed to support clarity, balance, and mindful living.",
+        descriptionMaxWidth: 885,
+        backgroundImages: ["https://res.cloudinary.com/dnh7x7r5j/image/upload/v1768154458/CarasoulWallpaper_ls56hr.jpg"],
+        overlayColor: "#180330B2",
+      },
+    },
+    {
+      sectionId: "philosophy",
+      enabled: true,
+      order: 1,
+      data: {
+        sectionTitle: "About",
+        heading: "Our Philosophy",
+        description:
+          "We believe modern living is at its best when it is intentional and informed. Utter Lore creates space for clarity through thoughtful publishing, considered digital and content experiences, and flexible lifestyle essentials. Guided by purpose rather than trends, we offer perspective, supporting balance, reflection, and mindful living shaped daily with intention.",
+        items: [
+          {
+            title: "Knowledge with Intention",
+            description:
+              "Thoughtful publishing designed to inform, deepen understanding, and endure beyond trends.",
+          },
+          {
+            title: "Clarity by Design",
+            description:
+              "Digital and content experiences, designed with clarity and purpose.",
+          },
+          {
+            title: "Design that Adapts",
+            description:
+              "Flexible lifestyle essentials created to move with life and support everyday balance.",
+          },
+        ],
+      },
+    },
     {
       sectionId: "what-we-do",
       enabled: true,
@@ -141,6 +139,10 @@ const aboutPageData: SeedPageData = {
         heading: "What We Do",
         description:
           "Utter Lore brings together knowledge, design, and intention to support thoughtful modern living.\nThrough Publishing, Digital, and FlexiBrez, we create content, experiences, and everyday essentials designed for clarity, balance, and long-term value.",
+        cardBackground: "radial-gradient(43.04% 25.07% at 50% 50%, #F9F4FF 100%)",
+        cardTitleColor: "#000000",
+        cardDescriptionColor: "#212121",
+        iconBackgroundColor: "#69488F",
         items: [
           {
             title: "Publishing Studio",
@@ -209,22 +211,22 @@ const aboutPageData: SeedPageData = {
         quote: "PURPOSEFUL BY DESIGN",
         cards: [
           {
-            icon: "/assets/images/skincare_monadams.png",
+            icon: "https://res.cloudinary.com/dnh7x7r5j/image/upload/v1770659732/skincare_monadams_ftqgko.png",
             text: "Skincare that works",
             gradient: "linear-gradient(135deg, #FCE7F3 0%, #FCCEE8 100%)",
           },
           {
-            icon: "/assets/images/premium-quality_mon-adams.png",
+            icon: "https://res.cloudinary.com/dnh7x7r5j/image/upload/v1770659732/premium-quality_mon-adams_aqp4hj.png",
             text: "Home essentials",
             gradient: "linear-gradient(135deg, #FEF3C6 0%, #FEE685 100%)",
           },
           {
-            icon: "/assets/images/light-bulb_monadams.png",
+            icon: "https://res.cloudinary.com/dnh7x7r5j/image/upload/v1770659732/light-bulb_monadams_hovxaz.png",
             text: "Tech that blends in",
             gradient: "linear-gradient(135deg, #E0E7FF 0%, #C6D2FF 100%)",
           },
           {
-            icon: "/assets/images/fashion_monadams.png",
+            icon: "https://res.cloudinary.com/dnh7x7r5j/image/upload/v1770659732/fashion_monadams_djgzhs.png",
             text: "Fashion that lasts",
             gradient: "linear-gradient(135deg, #F3E8FF 0%, #E9D4FF 100%)",
           },
@@ -279,38 +281,84 @@ const aboutPageData: SeedPageData = {
         arrowColor: "#69488F",
       },
     },
-    // {
-    //   sectionId: "studio-cards",
-    //   enabled: true,
-    //   order: 6,
-    //   data: {
-    //     title: "Explore Our World",
-    //     cards: [
-    //       {
-    //         title: "Our Blog",
-    //         description: "Insights, ideas, and inspiration from our team.",
-    //         image: "",
-    //         link: "/blog",
-    //         linkText: "Read More",
-    //       },
-    //       {
-    //         title: "Join Us",
-    //         description: "Explore career opportunities at Utter Lore.",
-    //         image: "",
-    //         link: "/careers",
-    //         linkText: "View Openings",
-    //       },
-    //       {
-    //         title: "Contact",
-    //         description: "Let's start a conversation about your next project.",
-    //         image: "",
-    //         link: "/contact",
-    //         linkText: "Get in Touch",
-    //       },
-    //     ],
-    //     columns: "3",
-    //   },
-    // },
+    {
+      sectionId: "studio-cards",
+      enabled: true,
+      order: 6,
+      data: {
+        cards: [
+          {
+            type: "image-overlay",
+            title: "Explore our Studios at your own pace",
+            backgroundColor: "#391A5C",
+            backgroundImage:
+              "https://res.cloudinary.com/dnh7x7r5j/image/upload/v1770743155/cardbackground_qwkoom.jpg",
+            imagePosition: "15% center",
+            overlayOpacity: 0.7,
+            titleColor: "#FFF",
+            titleFontSize: "clamp(18px, 3vw, 22px)",
+            titleFontFamily: "var(--font-bona-nova)",
+            buttons: [
+              {
+                text: "Publishing Studio",
+                link: "#",
+                backgroundColor: "#FFF",
+                textColor: "#1C1917",
+                fontFamily: "Arial, sans-serif",
+                fontSize: "clamp(12px, 2vw, 14px)",
+                isHighlighted: false,
+              },
+              {
+                text: "Digital Studio",
+                link: "#",
+                backgroundColor: "#FFF",
+                textColor: "#1C1917",
+                fontFamily: "Arial, sans-serif",
+                fontSize: "clamp(12px, 2vw, 14px)",
+                isHighlighted: false,
+              },
+              {
+                text: "FlexiBrez Studio",
+                link: "#",
+                backgroundColor: "#FFF",
+                textColor: "#1C1917",
+                fontFamily: "Arial, sans-serif",
+                fontSize: "clamp(12px, 2vw, 14px)",
+                isHighlighted: true,
+              },
+            ],
+            minHeight: "180px",
+            padding: "clamp(24px, 4vw, 45px) clamp(20px, 3vw, 36px)",
+            alignment: "center",
+          },
+          {
+            type: "gradient",
+            title: "Connect with the Utter Lore community",
+            backgroundColor: "#391A5C",
+            gradientStart: "#EEDEFF",
+            gradientEnd: "#F5F5F4",
+            gradientAngle: 135,
+            titleColor: "#1C1917",
+            titleFontSize: "clamp(18px, 3vw, 24px)",
+            titleFontFamily: "var(--font-bona-nova)",
+            buttons: [
+              {
+                text: "Join the Community Hub",
+                link: "#",
+                backgroundColor: "#1C1917",
+                textColor: "#FFF",
+                fontFamily: "var(--font-inter)",
+                fontSize: "clamp(12px, 2vw, 14px)",
+                isHighlighted: false,
+              },
+            ],
+            minHeight: "180px",
+            padding: "clamp(24px, 3vw, 30px) clamp(20px, 3vw, 32px)",
+            alignment: "center",
+          },
+        ],
+      },
+    },
   ],
 };
 

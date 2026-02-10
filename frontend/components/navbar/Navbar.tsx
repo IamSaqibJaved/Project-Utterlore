@@ -61,6 +61,7 @@ interface NavbarProps extends Omit<HeaderConfig, "logo" | "menuItems"> {
   ctaLink?: string;
   showCart?: boolean;
   className?: string;
+  hasHeroSection?: boolean; // Whether the page has an active hero section
 }
 
 export default function Navbar(props: NavbarProps) {
@@ -71,74 +72,57 @@ export default function Navbar(props: NavbarProps) {
   const logo =
     typeof props.logo === "string"
       ? { image: props.logo, alt: props.logoAlt || "UtterLore Logo", link: "/" }
-      : props.logo || {
-          image: "/assets/images/logo.png",
-          alt: "UtterLore Logo",
-          link: "/",
-        };
+      : props.logo || { image: '', alt: "UtterLore Logo", link: "/" };
 
-  const headerStyle = props.headerStyle || {
-    position: "absolute",
-    top: "23px",
-    height: "103px",
-    backgroundColor: "transparent",
-    paddingHorizontal: "50px",
-  };
+  const headerStyle = props.headerStyle || {};
 
   const menuItems = props.menuItems || [];
 
-  const menuStyle = props.menuStyle || {
-    fontSize: "clamp(14px, 1.25vw, 20px)",
-    normalFontWeight: "400",
-    activeFontWeight: "700",
-    textColor: "#FFFFFF",
-    activeUnderlineColor: "#FFFFFF",
-    gap: "clamp(16px, 2vw, 32px)",
-  };
+  const menuStyle = props.menuStyle || {};
 
-  const ctaButton = props.ctaButton || {
-    enabled: props.ctaText ? true : false,
-    text: props.ctaText || "Get in touch",
-    link: props.ctaLink || "/contact",
-    variant: "primary",
-    showArrow: true,
-    height: 52,
-    width: 195,
-  };
+  const ctaButton = props.ctaButton || {};
 
   // Convenience locals to support legacy render paths
   const ctaText = ctaButton.text;
   const ctaLink = ctaButton.link;
 
-  const cartIcon = props.cartIcon || {
-    enabled: props.showCart !== undefined ? props.showCart : false,
-    iconColor: "#FFFFFF",
-  };
+  const cartIcon = props.cartIcon || {};
 
   const currentPath = props.activeItem || pathname;
-  const { className = "" } = props;
+  const { className = "", hasHeroSection = true } = props;
+
+  // Determine background color: use default #180330 if no hero section, otherwise use provided color or transparent
+  const getBackgroundColor = () => {
+    if (!hasHeroSection) {
+      // No hero section, use default dark color
+      return '#180330';
+    }
+    // Has hero section, use provided color or transparent
+    return 'transparent';
+  };
 
   return (
     <nav
       className={`flex items-center z-50 w-full ${className}`}
       style={{
-        position: (headerStyle.position as React.CSSProperties['position']) || 'absolute',
-        top: headerStyle.top,
+        position:'absolute',
+        top: '0px',
         left: "0",
         right: "0",
-        height: headerStyle.height,
+        height: headerStyle.height || 'auto',
         justifyContent: "space-between",
         maxWidth: "100vw",
-        backgroundColor: headerStyle.backgroundColor,
-        paddingLeft: headerStyle.paddingHorizontal,
-        paddingRight: headerStyle.paddingHorizontal,
+        width: "100%",
+        backgroundColor: getBackgroundColor(),
+        paddingLeft: headerStyle.paddingHorizontal || '0',
+        paddingRight: headerStyle.paddingHorizontal || '0',
       }}
     >
       {/* Logo */}
       <div className="flex items-center">
         <Link href={logo.link || "/"}>
           <Image
-            src={logo.image || "/assets/images/logo.png"}
+            src={logo.image || ''}
             alt={logo.alt || "UtterLore Logo"}
             width={100}
             height={56}
@@ -159,7 +143,7 @@ export default function Navbar(props: NavbarProps) {
             className="flex items-center"
             style={{
               height: "52px",
-              gap: menuStyle.gap,
+              gap: menuStyle.gap || '1rem',
             }}
           >
             {menuItems.map((item, index) => {
@@ -176,13 +160,13 @@ export default function Navbar(props: NavbarProps) {
                       ? "var(--font-brunella)"
                       : "var(--font-bona-nova)",
                     fontWeight: isActive
-                      ? menuStyle.activeFontWeight
-                      : menuStyle.normalFontWeight,
+                      ? menuStyle.activeFontWeight || '700'
+                      : menuStyle.normalFontWeight || '400',
                     fontStyle: isSpecial ? "normal" : "normal",
-                    fontSize: menuStyle.fontSize,
+                    fontSize: menuStyle.fontSize || '16px',
                     lineHeight: "100%",
                     letterSpacing: "0%",
-                    color: menuStyle.textColor,
+                    color: menuStyle.textColor || '#000',
                     height: isActive ? "24px" : "52px",
                     minWidth: isActive ? "56px" : "auto",
                     gap: isActive ? "10px" : "0",
@@ -201,7 +185,7 @@ export default function Navbar(props: NavbarProps) {
                       left: "0",
                       width: isActive ? "100%" : "0%",
                       height: "1px",
-                      backgroundColor: menuStyle.activeUnderlineColor,
+                      backgroundColor: menuStyle.activeUnderlineColor || '#000',
                       transition: "width 0.3s ease-in-out",
                       transformOrigin: "left",
                     }}
@@ -216,13 +200,13 @@ export default function Navbar(props: NavbarProps) {
         <div className="flex items-center gap-2 md:gap-4">
           {ctaButton.enabled && (
             <Button
-              href={ctaButton.link || "/contact"}
-              text={ctaButton.text || "Get in touch"}
-              variant={(ctaButton.variant as "primary" | "secondary") || "primary"}
+              href={ctaButton.link}
+              text={ctaButton.text}
+              variant={(ctaButton.variant as "primary" | "secondary")}
               showArrow={ctaButton.showArrow ?? true}
               className="group"
-              height={ctaButton.height || 52}
-              width={ctaButton.width || 195}
+              height={ctaButton.height}
+              width={ctaButton.width}
             />
           )}
           {cartIcon.enabled && (

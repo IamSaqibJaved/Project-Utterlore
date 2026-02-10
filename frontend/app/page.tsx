@@ -42,32 +42,32 @@ interface AboutUsData {
 }
 
 // Default hero data as fallback
-const defaultHeroData: HeroData = {
-  sectionTitle: "UTTER LORE",
-  title: "EMPOWERING KNOWLEDGE FOR THE MINDFUL COLLECTIVES",
-  description:
-    "Where design meets storytelling. Explore insights, ideas, and reflections across beauty, fashion, and lifestyle.",
-  primaryButton: {
-    text: "Explore Our Stories",
-    link: "/stories",
-    enabled: true,
-  },
-};
+// const defaultHeroData: HeroData = {
+//   sectionTitle: "UTTER LORE",
+//   title: "EMPOWERING KNOWLEDGE FOR THE MINDFUL COLLECTIVES",
+//   description:
+//     "Where design meets storytelling. Explore insights, ideas, and reflections across beauty, fashion, and lifestyle.",
+//   primaryButton: {
+//     text: "Explore Our Stories",
+//     link: "/stories",
+//     enabled: true,
+//   },
+// };
 
 // Default about data as fallback
-const defaultAboutData: AboutUsData = {
-  sectionTitle: "About",
-  heading: "UTTER LORE",
-  content: [
-    "Utter Lore stands as a visionary entity, seamlessly blending creativity with purpose to craft experiences that transcend the ordinary.",
-    "From curated fashion insights and thoughtful lifestyle narratives to transformative beauty explorations, Utter Lore redefines the way we engage with the world around us.",
-    "At its core, Utter Lore is not just a brand—it is a movement.",
-  ],
-  buttonText: "Read Our Story",
-  buttonLink: "/about",
-  image: "/assets/images/AboutUs.png",
-  imagePosition: "left",
-};
+// const defaultAboutData: AboutUsData = {
+//   sectionTitle: "About",
+//   heading: "UTTER LORE",
+//   content: [
+//     "Utter Lore stands as a visionary entity, seamlessly blending creativity with purpose to craft experiences that transcend the ordinary.",
+//     "From curated fashion insights and thoughtful lifestyle narratives to transformative beauty explorations, Utter Lore redefines the way we engage with the world around us.",
+//     "At its core, Utter Lore is not just a brand—it is a movement.",
+//   ],
+//   buttonText: "Read Our Story",
+//   buttonLink: "/about",
+//   image: "/assets/images/AboutUs.png",
+//   imagePosition: "left",
+// };
 
 // Fetch header configuration from CMS
 async function getHeaderConfig() {
@@ -108,13 +108,13 @@ async function getLandingPageData() {
 
       return {
         hero: {
-          data: heroSection ? (heroSection.data as HeroData) : defaultHeroData,
+          data: heroSection ? (heroSection.data as HeroData) : {},
           enabled: heroSection?.enabled !== false,
         },
         about: {
           data: aboutSection
             ? (aboutSection.data as AboutUsData)
-            : defaultAboutData,
+            : {},
           enabled: aboutSection?.enabled !== false,
         },
       };
@@ -122,11 +122,11 @@ async function getLandingPageData() {
 
     return {
       hero: {
-        data: defaultHeroData,
+        data: {},
         enabled: true,
       },
       about: {
-        data: defaultAboutData,
+        data: {},
         enabled: true,
       },
     };
@@ -134,11 +134,11 @@ async function getLandingPageData() {
     console.error("Failed to fetch landing page data:", error);
     return {
       hero: {
-        data: defaultHeroData,
+        data: {},
         enabled: true,
       },
       about: {
-        data: defaultAboutData,
+        data: {},
         enabled: true,
       },
     };
@@ -150,33 +150,14 @@ export default async function Home() {
   const headerConfig = await getHeaderConfig();
 
   // Extract header configuration with defaults
-  const navbarProps = headerConfig || {
-    logo: { image: "/assets/images/logo.png", alt: "UtterLore Logo", link: "/" },
-    menuItems: [
-      { label: "Home", href: "/" },
-      { label: "About", href: "/about" },
-      { label: "Publishing", href: "/publishing" },
-      { label: "Digital", href: "/digital" },
-      { label: "Flexi Brez", href: "/flexi-brez", isSpecial: true },
-      { label: "Blog", href: "/blog" },
-      { label: "Community", href: "/community" },
-      { label: "Login", href: "/login" },
-    ],
-    ctaButton: {
-      enabled: true,
-      text: "Get in touch",
-      link: "/contact",
-    },
-    cartIcon: {
-      enabled: true,
-    },
-  };
+  const navbarProps = headerConfig;
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       <Navbar
         {...navbarProps}
         activeItem="/"
+        hasHeroSection={sections.hero.enabled}
       />
       {sections.hero.enabled && (
         <Hero

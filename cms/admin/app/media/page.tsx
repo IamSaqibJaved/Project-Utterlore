@@ -32,7 +32,7 @@ export default function MediaLibraryPage() {
       name: "CarasoulWallpaper.jpg",
       type: "image/jpeg",
       size: "2.4 MB",
-      url: "/assets/images/CarasoulWallpaper.jpg",
+      url: "https://res.cloudinary.com/dnh7x7r5j/image/upload/v1770487088/logo_h3dfwe.png",
       uploadedAt: "2024-01-10",
     },
     {
@@ -40,7 +40,7 @@ export default function MediaLibraryPage() {
       name: "AboutUs.png",
       type: "image/png",
       size: "1.8 MB",
-      url: "/assets/images/AboutUs.png",
+      url: "https://res.cloudinary.com/dnh7x7r5j/image/upload/v1770487088/logo_h3dfwe.png",
       uploadedAt: "2024-01-09",
     },
     {
@@ -48,7 +48,7 @@ export default function MediaLibraryPage() {
       name: "logo.png",
       type: "image/png",
       size: "124 KB",
-      url: "/assets/images/logo.png",
+      url: "https://res.cloudinary.com/dnh7x7r5j/image/upload/v1770487088/logo_h3dfwe.png",
       uploadedAt: "2024-01-08",
     },
   ];
