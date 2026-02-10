@@ -51,7 +51,7 @@ export default function Hero({
 }: HeroProps) {
   // Normalize carousel images - handles both local paths and external URLs
   const normalizedCarouselImages = normalizeImageSources(carouselImages, [
-    "/assets/images/CarasoulWallpaper.jpg",
+    "https://res.cloudinary.com/dnh7x7r5j/image/upload/v1768154458/CarasoulWallpaper_ls56hr.jpg",
   ]);
 
   // Normalize background image if provided

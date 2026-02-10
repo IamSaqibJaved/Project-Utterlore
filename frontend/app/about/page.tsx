@@ -96,89 +96,69 @@ interface HowWeWorkData {
   arrowColor?: string;
 }
 
-// Default hero data as fallback
-const defaultHeroData: HeroData = {
-  sectionTitle: "UTTER LORE",
-  title: "Where Insight, Design and Intention Shape Modern Living",
-  description:
-    "Utter Lore is a considered space for modern living, shaped by knowledge, design, and intention. We create thoughtful content, considered digital and e-commerce experiences, and flexible lifestyle essentials. Each element is designed to support clarity, balance, and mindful living.",
-  descriptionMaxWidth: 885,
-  backgroundImages: ["/assets/images/CarasoulWallpaper.jpg"],
-  overlayColor: "rgba(0, 0, 0, 0.5)",
-};
+// Studio Cards section data type
+interface StudioCardsData {
+  cards?: Array<{
+    type: "image-overlay" | "gradient";
+    title: string;
+    description?: string;
+    backgroundColor: string;
+    backgroundImage?: string;
+    imagePosition?: string;
+    overlayOpacity?: number;
+    gradientStart?: string;
+    gradientEnd?: string;
+    gradientAngle?: number;
+    titleColor: string;
+    titleFontSize: string;
+    titleFontFamily: string;
+    buttons: Array<{
+      text: string;
+      link: string;
+      backgroundColor: string;
+      textColor: string;
+      fontFamily: string;
+      fontSize: string;
+      isHighlighted?: boolean;
+    }>;
+    minHeight: string;
+    padding: string;
+    alignment?: string;
+  }>;
+}
 
-// Default philosophy data as fallback
-const defaultPhilosophyData: PhilosophyData = {
-  sectionTitle: "About",
-  heading: "Our Philosophy",
-  description:
-    "We believe modern living is at its best when it is intentional and informed. Utter Lore creates space for clarity through thoughtful publishing, considered digital and content experiences, and flexible lifestyle essentials. Guided by purpose rather than trends, we offer perspective, supporting balance, reflection, and mindful living shaped daily with intention.",
-  items: [
-    {
-      title: "Knowledge with Intention",
-      description:
-        "Thoughtful publishing designed to inform, deepen understanding, and endure beyond trends.",
-    },
-    {
-      title: "Clarity by Design",
-      description:
-        "Digital and content experiences, designed with clarity and purpose.",
-    },
-    {
-      title: "Design that Adapts",
-      description:
-        "Flexible lifestyle essentials created to move with life and support everyday balance.",
-    },
-  ],
-};
+// About page data type
+interface AboutPageData {
+  hero: {
+    data: HeroData | undefined;
+    enabled: boolean;
+  };
+  philosophy: {
+    data: PhilosophyData | undefined;
+    enabled: boolean;
+  };
+  whatWeDo: {
+    data: WhatWeDoData | undefined;
+    enabled: boolean;
+  };
+  studioValues: {
+    data: StudioValuesData | undefined;
+    enabled: boolean;
+  };
+  monAdams: {
+    data: MonAdamsData | undefined;
+    enabled: boolean;
+  };
+  howWeWork: {
+    data: HowWeWorkData | undefined;
+    enabled: boolean;
+  };
+  studioCards: {
+    data: StudioCardsData | undefined;
+    enabled: boolean;
+  };
+}
 
-// Default What We Do data as fallback
-const defaultWhatWeDoData: WhatWeDoData = {
-  heading: "What We Do",
-  description:
-    "Utter Lore brings together knowledge, design, and intention to support thoughtful modern living.\nThrough Publishing, Digital, and FlexiBrez, we create content, experiences, and everyday essentials designed for clarity, balance, and long-term value.",
-  items: [
-    {
-      title: "Publishing Studio",
-      description:
-        "Thoughtful editorial content and resources designed to inform, inspire, and remain relevant over time.",
-      isSpecial: false,
-    },
-    {
-      title: "Digital Studio",
-      description:
-        "End-to-end project design and content creation, delivering intentional digital experiences with clarity and purpose.",
-      isSpecial: false,
-    },
-    {
-      title: "FlexiBrez Studio",
-      description:
-        "Flexible lifestyle essentials created to adapt to everyday life and support ease, balance, and mindful use.",
-      isSpecial: true,
-    },
-  ],
-};
-
-// Default Studio Values data as fallback
-const defaultStudioValuesData: StudioValuesData = {
-  heading: "The Studio Values",
-  description:
-    "We bring research, thoughtful writing, and creative perspective together to define Utter Lore's editorial voice.",
-  values: [
-    {
-      title: "Clarity",
-    },
-    {
-      title: "Design",
-    },
-    {
-      title: "Intentional",
-    },
-    {
-      title: "Purposeful",
-    },
-  ],
-};
 
 // Fetch header configuration from CMS
 async function getHeaderConfig() {
@@ -198,7 +178,7 @@ async function getHeaderConfig() {
 }
 
 // Fetch about page data from CMS
-async function getAboutPageData() {
+async function getAboutPageData(): Promise<AboutPageData> {
   try {
     const page = await cmsApi.pages.getBySlug("/about");
 
@@ -238,27 +218,33 @@ async function getAboutPageData() {
           section.id === "how-we-work" || section.sectionId === "how-we-work",
       );
 
+      // Find the studio-cards section
+      const studioCardsSection = page.sections.find(
+        (section) =>
+          section.id === "studio-cards" || section.sectionId === "studio-cards",
+      );
+
       return {
         hero: {
-          data: heroSection ? (heroSection.data as HeroData) : defaultHeroData,
+          data: heroSection ? (heroSection.data as HeroData) : undefined,
           enabled: heroSection?.enabled !== false,
         },
         philosophy: {
           data: philosophySection
             ? (philosophySection.data as PhilosophyData)
-            : defaultPhilosophyData,
+            : undefined,
           enabled: philosophySection?.enabled !== false,
         },
         whatWeDo: {
           data: whatWeDoSection
             ? (whatWeDoSection.data as WhatWeDoData)
-            : defaultWhatWeDoData,
+            : undefined,
           enabled: whatWeDoSection?.enabled !== false,
         },
         studioValues: {
           data: studioValuesSection
             ? (studioValuesSection.data as StudioValuesData)
-            : defaultStudioValuesData,
+            : undefined,
           enabled: studioValuesSection?.enabled !== false,
         },
         monAdams: {
@@ -273,61 +259,75 @@ async function getAboutPageData() {
             : undefined,
           enabled: howWeWorkSection?.enabled !== false,
         },
+        studioCards: {
+          data: studioCardsSection
+            ? (studioCardsSection.data as StudioCardsData)
+            : undefined,
+          enabled: studioCardsSection?.enabled !== false,
+        },
       };
     }
 
     return {
       hero: {
-        data: defaultHeroData,
-        enabled: true,
+        data: undefined,
+        enabled: false,
       },
       philosophy: {
-        data: defaultPhilosophyData,
-        enabled: true,
+        data: undefined,
+        enabled: false,
       },
       whatWeDo: {
-        data: defaultWhatWeDoData,
-        enabled: true,
+        data: undefined,
+        enabled: false,
       },
       studioValues: {
-        data: defaultStudioValuesData,
-        enabled: true,
+        data: undefined,
+        enabled: false,
       },
       monAdams: {
         data: undefined,
-        enabled: true,
+        enabled: false,
       },
       howWeWork: {
         data: undefined,
-        enabled: true,
+        enabled: false,
+      },
+      studioCards: {
+        data: undefined,
+        enabled: false,
       },
     };
   } catch (error) {
     console.error("Failed to fetch about page data:", error);
     return {
       hero: {
-        data: defaultHeroData,
-        enabled: true,
+        data: undefined,
+        enabled: false,
       },
       philosophy: {
-        data: defaultPhilosophyData,
-        enabled: true,
+        data: undefined,
+        enabled: false,
       },
       whatWeDo: {
-        data: defaultWhatWeDoData,
-        enabled: true,
+        data: undefined,
+        enabled: false,
       },
       studioValues: {
-        data: defaultStudioValuesData,
-        enabled: true,
+        data: undefined,
+        enabled: false,
       },
       monAdams: {
         data: undefined,
-        enabled: true,
+        enabled: false,
       },
       howWeWork: {
         data: undefined,
-        enabled: true,
+        enabled: false,
+      },
+      studioCards: {
+        data: undefined,
+        enabled: false,
       },
     };
   }
@@ -337,38 +337,18 @@ export default async function AboutPage() {
   const sections = await getAboutPageData();
   const headerConfig = await getHeaderConfig();
 
-  // Extract header configuration with defaults
-  const navbarProps = headerConfig || {
-    logo: { image: "/assets/images/logo.png", alt: "UtterLore Logo", link: "/" },
-    menuItems: [
-      { label: "Home", href: "/" },
-      { label: "About", href: "/about" },
-      { label: "Publishing", href: "/publishing" },
-      { label: "Digital", href: "/digital" },
-      { label: "Flexi Brez", href: "/flexi-brez", isSpecial: true },
-      { label: "Blog", href: "/blog" },
-      { label: "Community", href: "/community" },
-      { label: "Login", href: "/login" },
-    ],
-    ctaButton: {
-      enabled: true,
-      text: "Get in touch",
-      link: "/contact",
-    },
-    cartIcon: {
-      enabled: true,
-    },
-  };
-
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
-      <Navbar
-        {...navbarProps}
-        activeItem="/about"
-      />
+      {headerConfig && (
+        <Navbar
+          {...headerConfig}
+          activeItem="/about"
+          hasHeroSection={sections.hero.enabled}
+        />
+      )}
       
       {/* Hero Section - CMS Driven */}
-      {sections.hero.enabled && (
+      {sections.hero.enabled && sections.hero.data && (
         <Hero
           sectionTitle={sections.hero.data.sectionTitle}
           title={sections.hero.data.title}
@@ -380,7 +360,7 @@ export default async function AboutPage() {
       )}
       
       {/* Philosophy Section - CMS Driven */}
-      {sections.philosophy.enabled && (
+      {sections.philosophy.enabled && sections.philosophy.data && (
         <PhilosophySection
           sectionTitle={sections.philosophy.data.sectionTitle}
           heading={sections.philosophy.data.heading}
@@ -390,7 +370,7 @@ export default async function AboutPage() {
       )}
       
       {/* What We Do Section - CMS Driven */}
-      {sections.whatWeDo.enabled && (
+      {sections.whatWeDo.enabled && sections.whatWeDo.data && (
         <WhatWeDoSection
           heading={sections.whatWeDo.data.heading}
           description={sections.whatWeDo.data.description}
@@ -403,7 +383,7 @@ export default async function AboutPage() {
       )}
       
       {/* Studio Values Section - CMS Driven */}
-      {sections.studioValues.enabled && (
+      {sections.studioValues.enabled && sections.studioValues.data && (
         <StudioValuesSection
           heading={sections.studioValues.data.heading}
           description={sections.studioValues.data.description}
@@ -414,43 +394,46 @@ export default async function AboutPage() {
       )}
       
       {/* Mon Adams Section - CMS Driven */}
-      {sections.monAdams.enabled && (
+      {sections.monAdams.enabled && sections.monAdams.data && (
         <MonAdamsSection
-          name={sections.monAdams.data?.name}
-          title={sections.monAdams.data?.title}
-          bio={sections.monAdams.data?.bio}
-          image={sections.monAdams.data?.image}
-          backgroundImage={sections.monAdams.data?.backgroundImage}
-          quote={sections.monAdams.data?.quote}
-          cards={sections.monAdams.data?.cards}
-          headingColor={sections.monAdams.data?.headingColor}
-          bioColor={sections.monAdams.data?.bioColor}
-          cardTextColor={sections.monAdams.data?.cardTextColor}
-          cardBackgroundColor={sections.monAdams.data?.cardBackgroundColor}
-          cardBorderColor={sections.monAdams.data?.cardBorderColor}
-          quoteColor={sections.monAdams.data?.quoteColor}
+          name={sections.monAdams.data.name}
+          title={sections.monAdams.data.title}
+          bio={sections.monAdams.data.bio}
+          image={sections.monAdams.data.image}
+          backgroundImage={sections.monAdams.data.backgroundImage}
+          quote={sections.monAdams.data.quote}
+          cards={sections.monAdams.data.cards}
+          headingColor={sections.monAdams.data.headingColor}
+          bioColor={sections.monAdams.data.bioColor}
+          cardTextColor={sections.monAdams.data.cardTextColor}
+          cardBackgroundColor={sections.monAdams.data.cardBackgroundColor}
+          cardBorderColor={sections.monAdams.data.cardBorderColor}
+          quoteColor={sections.monAdams.data.quoteColor}
         />
       )}
       
       {/* How We Work Section - CMS Driven */}
-      {sections.howWeWork.enabled && (
+      {sections.howWeWork.enabled && sections.howWeWork.data && (
         <HowWeWorkSection
-          heading={sections.howWeWork.data?.heading}
-          description={sections.howWeWork.data?.description}
-          steps={sections.howWeWork.data?.steps}
-          headingColor={sections.howWeWork.data?.headingColor}
-          descriptionColor={sections.howWeWork.data?.descriptionColor}
-          stepTitleColor={sections.howWeWork.data?.stepTitleColor}
-          stepSubheadingColor={sections.howWeWork.data?.stepSubheadingColor}
-          stepDescriptionColor={sections.howWeWork.data?.stepDescriptionColor}
-          iconContainerBackground={sections.howWeWork.data?.iconContainerBackground}
-          iconContainerBorderColor={sections.howWeWork.data?.iconContainerBorderColor}
-          iconColor={sections.howWeWork.data?.iconColor}
-          arrowColor={sections.howWeWork.data?.arrowColor}
+          heading={sections.howWeWork.data.heading}
+          description={sections.howWeWork.data.description}
+          steps={sections.howWeWork.data.steps}
+          headingColor={sections.howWeWork.data.headingColor}
+          descriptionColor={sections.howWeWork.data.descriptionColor}
+          stepTitleColor={sections.howWeWork.data.stepTitleColor}
+          stepSubheadingColor={sections.howWeWork.data.stepSubheadingColor}
+          stepDescriptionColor={sections.howWeWork.data.stepDescriptionColor}
+          iconContainerBackground={sections.howWeWork.data.iconContainerBackground}
+          iconContainerBorderColor={sections.howWeWork.data.iconContainerBorderColor}
+          iconColor={sections.howWeWork.data.iconColor}
+          arrowColor={sections.howWeWork.data.arrowColor}
         />
       )}
       
-      <StudioCardsSection />
+      {/* Studio Cards Section - CMS Driven */}
+      {sections.studioCards.enabled && sections.studioCards.data && sections.studioCards.data.cards && (
+        <StudioCardsSection data={sections.studioCards.data} />
+      )}
     </div>
   );
 }

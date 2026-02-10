@@ -25,7 +25,6 @@ export const landingPageSchema: PageSchema = {
           type: "text",
           description: "Small text above the main title (e.g., 'UTTER LORE')",
           placeholder: "Enter section title",
-          defaultValue: "UTTER LORE",
         },
         {
           name: "title",
@@ -34,7 +33,6 @@ export const landingPageSchema: PageSchema = {
           description: "The main headline of the hero section",
           required: true,
           placeholder: "Enter main headline",
-          defaultValue: "EMPOWERING KNOWLEDGE FOR THE MINDFUL COLLECTIVES",
         },
         {
           name: "description",
@@ -43,8 +41,6 @@ export const landingPageSchema: PageSchema = {
           description: "Supporting text below the title",
           rows: 3,
           placeholder: "Enter description text",
-          defaultValue:
-            "Where design meets storytelling. Explore insights, ideas, and reflections across beauty, fashion, and lifestyle.",
         },
         {
           name: "primaryButton",
@@ -57,14 +53,12 @@ export const landingPageSchema: PageSchema = {
               label: "Button Text",
               type: "text",
               placeholder: "e.g., Explore Our Stories",
-              defaultValue: "Explore Our Stories",
             },
             {
               name: "link",
               label: "Button Link",
               type: "url",
               placeholder: "/stories",
-              defaultValue: "/stories",
             },
             {
               name: "backgroundColor",
@@ -72,7 +66,6 @@ export const landingPageSchema: PageSchema = {
               type: "color",
               description: "Button background color",
               placeholder: "e.g., #000000 or rgba(0,0,0,1)",
-              defaultValue: "#000000",
             },
             {
               name: "textColor",
@@ -80,13 +73,11 @@ export const landingPageSchema: PageSchema = {
               type: "color",
               description: "Button text color",
               placeholder: "e.g., #FFFFFF or rgba(255,255,255,1)",
-              defaultValue: "#FFFFFF",
             },
             {
               name: "enabled",
               label: "Show Button",
               type: "boolean",
-              defaultValue: true,
             },
           ],
         },
@@ -114,7 +105,6 @@ export const landingPageSchema: PageSchema = {
               type: "color",
               description: "Button background color",
               placeholder: "e.g., #FFFFFF or rgba(255,255,255,0.1)",
-              defaultValue: "transparent",
             },
             {
               name: "textColor",
@@ -122,7 +112,6 @@ export const landingPageSchema: PageSchema = {
               type: "color",
               description: "Button text color",
               placeholder: "e.g., #FFFFFF or rgba(255,255,255,1)",
-              defaultValue: "#FFFFFF",
             },
             {
               name: "borderColor",
@@ -130,13 +119,11 @@ export const landingPageSchema: PageSchema = {
               type: "color",
               description: "Button border color (for outline style)",
               placeholder: "e.g., #FFFFFF",
-              defaultValue: "#FFFFFF",
             },
             {
               name: "enabled",
               label: "Show Button",
               type: "boolean",
-              defaultValue: false,
             },
           ],
         },
@@ -147,14 +134,12 @@ export const landingPageSchema: PageSchema = {
           description:
             "Images for the background carousel. Add multiple for slideshow effect.",
           maxItems: 10,
-          defaultValue: ["/assets/images/CarasoulWallpaper.jpg"],
         },
         {
           name: "overlayColor",
           label: "Overlay Color",
           type: "color",
           description: "Color overlay on the background image",
-          defaultValue: "rgba(0, 0, 0, 0.5)",
         },
       ],
     },
@@ -170,13 +155,11 @@ export const landingPageSchema: PageSchema = {
           name: "sectionTitle",
           label: "Section Title",
           type: "text",
-          defaultValue: "About",
         },
         {
           name: "heading",
           label: "Heading",
           type: "text",
-          defaultValue: "UTTER LORE",
         },
         {
           name: "content",
@@ -189,29 +172,21 @@ export const landingPageSchema: PageSchema = {
             type: "textarea",
             rows: 3,
           },
-          defaultValue: [
-            "Utter Lore stands as a visionary entity, seamlessly blending creativity with purpose to craft experiences that transcend the ordinary.",
-            "From curated fashion insights and thoughtful lifestyle narratives to transformative beauty explorations, Utter Lore redefines the way we engage with the world around us.",
-            "At its core, Utter Lore is not just a brand—it is a movement.",
-          ],
         },
         {
           name: "buttonText",
           label: "Button Text",
           type: "text",
-          defaultValue: "Read Our Story",
         },
         {
           name: "buttonLink",
           label: "Button Link",
           type: "url",
-          defaultValue: "/about",
         },
         {
           name: "image",
           label: "Image",
           type: "image",
-          defaultValue: "/assets/images/AboutUs.png",
         },
         {
           name: "imagePosition",
